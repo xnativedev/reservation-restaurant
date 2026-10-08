@@ -1,20 +1,55 @@
-"use client";
+﻿"use client";
 
 import { Link } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Save, Store, Shield, Clock, Bell, CheckCircle2 } from "lucide-react";
+import { restaurant } from "@/data/restaurant";
+
+// --- Shared primitives -------------------------------------------------------
+
+type ToggleRowProps = {
+  label: string;
+  description: string;
+  defaultChecked?: boolean;
+};
+
+function ToggleRow({ label, description, defaultChecked = true }: ToggleRowProps) {
+  return (
+    <div className="flex items-center justify-between p-4 border border-stone-200 rounded-xl">
+      <div>
+        <p className="font-medium text-stone-900">{label}</p>
+        <p className="text-sm text-stone-500 mt-1">{description}</p>
+      </div>
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" defaultChecked={defaultChecked} className="sr-only peer" />
+        <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
+      </label>
+    </div>
+  );
+}
+
+// --- Shared field styles -----------------------------------------------------
+
+const inputClass = "w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all";
+const selectClass = `${inputClass} sm:w-64`;
+
+// --- Tab definitions ---------------------------------------------------------
+
+type TabId = "general" | "booking" | "notifications" | "security";
+
+// --- Component ---------------------------------------------------------------
 
 export function SettingsManager() {
-  const locale = useLocale();
-  const [activeTab, setActiveTab] = useState("general");
+  const t = useTranslations("adminSettings");
+  const [activeTab, setActiveTab] = useState<TabId>("general");
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    // Simulate save delay
+    // TODO: persist settings via API
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
@@ -22,100 +57,92 @@ export function SettingsManager() {
     }, 1000);
   };
 
+  const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
+    { id: "general",       label: t("tabGeneral"),       icon: Store  },
+    { id: "booking",       label: t("tabBooking"),       icon: Clock  },
+    { id: "notifications", label: t("tabNotifications"), icon: Bell   },
+    { id: "security",      label: t("tabSecurity"),      icon: Shield },
+  ];
+
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out flex flex-col lg:flex-row gap-8">
-      
-      {/* Sidebar Navigation for Settings */}
+
+      {/* Sidebar Navigation */}
       <div className="w-full lg:w-64 shrink-0">
         <nav className="space-y-1">
-          <button 
-            onClick={() => setActiveTab("general")}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${activeTab === "general" ? "bg-amber-500/10 text-amber-600" : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"}`}
-          >
-            <Store className="w-4 h-4" /> Restaurant Profile
-          </button>
-          <button 
-            onClick={() => setActiveTab("booking")}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${activeTab === "booking" ? "bg-amber-500/10 text-amber-600" : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"}`}
-          >
-            <Clock className="w-4 h-4" /> Booking Rules
-          </button>
-          <button 
-            onClick={() => setActiveTab("notifications")}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${activeTab === "notifications" ? "bg-amber-500/10 text-amber-600" : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"}`}
-          >
-            <Bell className="w-4 h-4" /> Notifications
-          </button>
-          <button 
-            onClick={() => setActiveTab("security")}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${activeTab === "security" ? "bg-amber-500/10 text-amber-600" : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"}`}
-          >
-            <Shield className="w-4 h-4" /> Security
-          </button>
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                activeTab === id
+                  ? "bg-amber-500/10 text-amber-600"
+                  : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
         </nav>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex-1">
         <form onSubmit={handleSave} className="bg-white border border-stone-200 shadow-sm rounded-2xl overflow-hidden">
-          
+
           <div className="p-6 sm:p-8 border-b border-stone-100">
+
+            {/* General */}
             {activeTab === "general" && (
               <div>
-                <h3 className="text-lg font-medium text-stone-900 mb-6">Restaurant Profile</h3>
+                <h3 className="text-lg font-medium text-stone-900 mb-6">{t("tabGeneral")}</h3>
                 <div className="space-y-6 max-w-2xl">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-2">Restaurant Name</label>
-                      <input type="text" defaultValue="Maison Ember" className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all" />
+                      <label className="block text-sm font-medium text-stone-700 mb-2">{t("fieldName")}</label>
+                      <input type="text" defaultValue={restaurant.name} className={inputClass} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-2">Contact Phone</label>
-                      <input type="text" defaultValue="+66 2 123 4567" className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all" />
+                      <label className="block text-sm font-medium text-stone-700 mb-2">{t("fieldPhone")}</label>
+                      <input type="text" defaultValue={restaurant.phone} className={inputClass} />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-2">Contact Email</label>
-                    <input type="email" defaultValue="reservations@maisonember.com" className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all" />
+                    <label className="block text-sm font-medium text-stone-700 mb-2">{t("fieldEmail")}</label>
+                    <input type="email" defaultValue={restaurant.email} className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-2">Address</label>
-                    <textarea rows={3} defaultValue="123 Sukhumvit Road, Bangkok, Thailand" className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"></textarea>
+                    <label className="block text-sm font-medium text-stone-700 mb-2">{t("fieldAddress")}</label>
+                    <textarea rows={3} defaultValue={restaurant.address} className={inputClass} />
                   </div>
                 </div>
               </div>
             )}
 
+            {/* Booking */}
             {activeTab === "booking" && (
               <div>
-                <h3 className="text-lg font-medium text-stone-900 mb-6">Booking Rules</h3>
+                <h3 className="text-lg font-medium text-stone-900 mb-6">{t("tabBooking")}</h3>
                 <div className="space-y-6 max-w-2xl">
-                  <div className="flex items-center justify-between p-4 border border-stone-200 rounded-xl">
-                    <div>
-                      <p className="font-medium text-stone-900">Accept Online Bookings</p>
-                      <p className="text-sm text-stone-500 mt-1">Allow customers to book via the website</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                    </label>
-                  </div>
-
+                  <ToggleRow
+                    label={t("bookingOnlineLabel")}
+                    description={t("bookingOnlineDesc")}
+                  />
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-2">Maximum Party Size</label>
-                    <select defaultValue="8 Guests" className="w-full sm:w-64 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+                    <label className="block text-sm font-medium text-stone-700 mb-2">{t("bookingMaxParty")}</label>
+                    <select defaultValue="8 Guests" className={selectClass}>
                       <option>4 Guests</option>
                       <option>6 Guests</option>
                       <option>8 Guests</option>
                       <option>10 Guests</option>
                       <option>12 Guests</option>
                     </select>
-                    <p className="text-xs text-stone-500 mt-2">Groups larger than this will be asked to call the restaurant.</p>
+                    <p className="text-xs text-stone-500 mt-2">{t("bookingMaxPartyHint")}</p>
                   </div>
-                  
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-2">Advance Booking Limit</label>
-                    <select defaultValue="30 Days in advance" className="w-full sm:w-64 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+                    <label className="block text-sm font-medium text-stone-700 mb-2">{t("bookingAdvance")}</label>
+                    <select defaultValue="30 Days in advance" className={selectClass}>
                       <option>14 Days in advance</option>
                       <option>30 Days in advance</option>
                       <option>60 Days in advance</option>
@@ -126,64 +153,59 @@ export function SettingsManager() {
               </div>
             )}
 
-            {activeTab === "security" && (
+            {/* Notifications */}
+            {activeTab === "notifications" && (
               <div>
-                <h3 className="text-lg font-medium text-stone-900 mb-6">Security & Access</h3>
-                <div className="space-y-6 max-w-2xl">
-                  <div className="bg-stone-50 p-4 border border-stone-200 rounded-xl mb-6 flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-amber-600 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-stone-900 text-sm">Secure Password Management</p>
-                      <p className="text-sm text-stone-600 mt-1">{locale === "th" ? "จัดการข้อมูลส่วนตัวและเปลี่ยนรหัสผ่านได้ที่หน้าบัญชีของฉัน" : "Manage your personal details and password from your account."}</p>
-                    </div>
-                  </div>
-                  
-                  <Link href="/account" className="button button-dark">{locale === "th" ? "บัญชีของฉัน" : "My account"}</Link>
+                <h3 className="text-lg font-medium text-stone-900 mb-6">{t("tabNotifications")}</h3>
+                <div className="space-y-4 max-w-2xl">
+                  <ToggleRow
+                    label={t("notifNewLabel")}
+                    description={t("notifNewDesc")}
+                  />
+                  <ToggleRow
+                    label={t("notifCancelLabel")}
+                    description={t("notifCancelDesc")}
+                  />
                 </div>
               </div>
             )}
 
-            {activeTab === "notifications" && (
+            {/* Security */}
+            {activeTab === "security" && (
               <div>
-                <h3 className="text-lg font-medium text-stone-900 mb-6">Email Notifications</h3>
-                <div className="space-y-4 max-w-2xl">
-                  <div className="flex items-center justify-between p-4 border border-stone-200 rounded-xl">
+                <h3 className="text-lg font-medium text-stone-900 mb-6">{t("tabSecurity")}</h3>
+                <div className="space-y-6 max-w-2xl">
+                  <div className="bg-stone-50 p-4 border border-stone-200 rounded-xl flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-amber-600 mt-0.5" />
                     <div>
-                      <p className="font-medium text-stone-900">New Booking Alerts</p>
-                      <p className="text-sm text-stone-500 mt-1">Receive an email when a customer books a table</p>
+                      <p className="font-medium text-stone-900 text-sm">{t("securityTitle")}</p>
+                      <p className="text-sm text-stone-600 mt-1">{t("securityDesc")}</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                    </label>
                   </div>
-                  
-                  <div className="flex items-center justify-between p-4 border border-stone-200 rounded-xl">
-                    <div>
-                      <p className="font-medium text-stone-900">Cancellation Alerts</p>
-                      <p className="text-sm text-stone-500 mt-1">Receive an email when a customer cancels</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                    </label>
-                  </div>
+                  <Link href="/account" className="button button-dark">{t("securityLink")}</Link>
                 </div>
               </div>
             )}
+
           </div>
 
           <div className="bg-stone-50/50 p-6 sm:p-8 flex items-center justify-end gap-4">
-            {saved && <span className="text-sm text-emerald-600 font-medium flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Settings saved successfully</span>}
-            <button 
-              type="submit" 
+            {saved && (
+              <span className="text-sm text-emerald-600 font-medium flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                {t("savedMessage")}
+              </span>
+            )}
+            <button
+              type="submit"
               disabled={isSaving}
               className="px-6 py-2.5 bg-amber-500 text-stone-900 font-medium rounded-xl hover:bg-amber-400 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
-              {isSaving ? "Saving..." : "Save Changes"}
+              {isSaving ? t("saving") : t("save")}
             </button>
           </div>
+
         </form>
       </div>
 

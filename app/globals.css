@@ -12,6 +12,7 @@
   --olive: #596047;
   --line: #d8d0c3;
   --line-dark: #49443d;
+  --admin-bg: #f7f7f5;  /* admin panel background */
   --display: var(--font-display), Georgia, serif;
   --body: var(--font-body), Arial, sans-serif;
 }

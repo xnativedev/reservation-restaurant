@@ -417,4 +417,30 @@
       "no-show": "Missed visit"
     }
   }
+,
+  "adminSettings": {
+    "tabGeneral": "Restaurant Profile",
+    "tabBooking": "Booking Rules",
+    "tabNotifications": "Notifications",
+    "tabSecurity": "Security",
+    "fieldName": "Restaurant Name",
+    "fieldPhone": "Contact Phone",
+    "fieldEmail": "Contact Email",
+    "fieldAddress": "Address",
+    "bookingOnlineLabel": "Accept Online Bookings",
+    "bookingOnlineDesc": "Allow customers to book via the website",
+    "bookingMaxParty": "Maximum Party Size",
+    "bookingMaxPartyHint": "Groups larger than this will be asked to call the restaurant.",
+    "bookingAdvance": "Advance Booking Limit",
+    "notifNewLabel": "New Booking Alerts",
+    "notifNewDesc": "Receive an email when a customer books a table",
+    "notifCancelLabel": "Cancellation Alerts",
+    "notifCancelDesc": "Receive an email when a customer cancels",
+    "securityTitle": "Secure Password Management",
+    "securityDesc": "Manage your personal details and password from your account.",
+    "securityLink": "My account",
+    "savedMessage": "Settings saved successfully",
+    "saving": "Saving...",
+    "save": "Save Changes"
+  }
 }

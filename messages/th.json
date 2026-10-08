@@ -417,4 +417,30 @@
       "no-show": "ไม่ได้มาใช้บริการ"
     }
   }
+,
+  "adminSettings": {
+    "tabGeneral": "ข้อมูลร้านอาหาร",
+    "tabBooking": "กฎการจอง",
+    "tabNotifications": "การแจ้งเตือน",
+    "tabSecurity": "ความปลอดภัย",
+    "fieldName": "ชื่อร้านอาหาร",
+    "fieldPhone": "เบอร์ติดต่อ",
+    "fieldEmail": "อีเมลติดต่อ",
+    "fieldAddress": "ที่อยู่",
+    "bookingOnlineLabel": "รับการจองออนไลน์",
+    "bookingOnlineDesc": "อนุญาตให้ลูกค้าจองผ่านเว็บไซต์",
+    "bookingMaxParty": "จำนวนผู้ร่วมโต๊ะสูงสุด",
+    "bookingMaxPartyHint": "กลุ่มที่ใหญ่กว่านี้จะได้รับแจ้งให้โทรติดต่อร้าน",
+    "bookingAdvance": "ระยะเวลาล่วงหน้าในการจอง",
+    "notifNewLabel": "แจ้งเตือนการจองใหม่",
+    "notifNewDesc": "รับอีเมลเมื่อลูกค้าจองโต๊ะ",
+    "notifCancelLabel": "แจ้งเตือนการยกเลิก",
+    "notifCancelDesc": "รับอีเมลเมื่อลูกค้ายกเลิกการจอง",
+    "securityTitle": "การจัดการรหัสผ่านอย่างปลอดภัย",
+    "securityDesc": "จัดการข้อมูลส่วนตัวและเปลี่ยนรหัสผ่านได้ที่หน้าบัญชีของฉัน",
+    "securityLink": "บัญชีของฉัน",
+    "savedMessage": "บันทึกการตั้งค่าสำเร็จ",
+    "saving": "กำลังบันทึก...",
+    "save": "บันทึกการเปลี่ยนแปลง"
+  }
 }

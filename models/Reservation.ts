@@ -1,6 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { reservationStatuses, zones } from "@/lib/validation";
 
-export type ReservationStatus = "pending" | "confirmed" | "arrived" | "seated" | "completed" | "cancelled" | "no-show";
+export type ReservationStatus = (typeof reservationStatuses)[number];
 
 export interface IReservation extends Document {
   userId?: string;
@@ -28,14 +29,10 @@ const ReservationSchema = new Schema<IReservation>({
   date: { type: String, required: true },
   time: { type: String, required: true },
   guests: { type: Number, required: true },
-  seatingOption: { type: String, required: true },
+  seatingOption: { type: String, enum: [...zones], required: true },
   tableId: { type: Schema.Types.ObjectId, ref: 'Table' },
   specialRequests: { type: String },
-  status: { 
-    type: String, 
-    enum: ["pending", "confirmed", "arrived", "seated", "completed", "cancelled", "no-show"],
-    default: "pending" 
-  },
+  status: { type: String, enum: [...reservationStatuses], default: "pending" },
 }, { timestamps: true });
 
 export const Reservation: Model<IReservation> =

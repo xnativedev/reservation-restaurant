@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     await requireAdmin(request);
     await connectToDatabase();
-    const allReservations = await Reservation.find({});
+    const allReservations = await Reservation.find({}).lean();
     
     if (allReservations.length === 0) {
       return NextResponse.json({ success: true, data: { empty: true } });

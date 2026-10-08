@@ -1,7 +1,8 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { zones, tableStatuses } from "@/lib/validation";
 
-export type TableZone = "dining-room" | "terrace" | "chefs-counter";
-export type TableStatus = "available" | "reserved" | "occupied" | "cleaning" | "blocked";
+export type TableZone = (typeof zones)[number];
+export type TableStatus = (typeof tableStatuses)[number];
 
 export interface ITable extends Document {
   tableNumber: string;
@@ -14,17 +15,9 @@ export interface ITable extends Document {
 
 const TableSchema = new Schema<ITable>({
   tableNumber: { type: String, required: true, unique: true },
-  zone: { 
-    type: String, 
-    enum: ["dining-room", "terrace", "chefs-counter"],
-    required: true 
-  },
+  zone: { type: String, enum: [...zones], required: true },
   capacity: { type: Number, required: true },
-  status: { 
-    type: String, 
-    enum: ["available", "reserved", "occupied", "cleaning", "blocked"],
-    default: "available" 
-  },
+  status: { type: String, enum: [...tableStatuses], default: "available" },
 }, { timestamps: true });
 
 export const Table: Model<ITable> =

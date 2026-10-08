@@ -44,18 +44,17 @@ export function AnalyticsDashboard() {
   }
 
   const { overview, zones, days } = data;
-  
   // Prepare simple CSS bar chart data for Zones
   const maxZoneCount = Math.max(...Object.values(zones.counts as Record<string, number>), 1);
   const zoneLabels: Record<string, string> = { "dining-room": "Dining Room", "terrace": "Terrace", "chefs-counter": "Chef's Counter" };
-  
+
   // Day order
   const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const maxDayCount = Math.max(...Object.values(days as Record<string, number>), 1);
 
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out space-y-8">
-      
+
       {/* Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white border border-stone-200 rounded-2xl p-5 shadow-sm">
@@ -65,7 +64,7 @@ export function AnalyticsDashboard() {
           </div>
           <span className="text-3xl font-light text-stone-900">{overview.totalBookings}</span>
         </div>
-        
+
         <div className="bg-white border border-stone-200 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 text-stone-500 mb-2">
             <Users className="w-4 h-4" />
@@ -110,8 +109,8 @@ export function AnalyticsDashboard() {
                     <span className="text-stone-500">{numCount} bookings ({zones.guests[zone]} guests)</span>
                   </div>
                   <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-amber-500 rounded-full transition-all duration-1000" 
+                    <div
+                      className="h-full bg-amber-500 rounded-full transition-all duration-1000"
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
@@ -130,17 +129,17 @@ export function AnalyticsDashboard() {
             {dayOrder.map(day => {
               const count = days[day] || 0;
               const percentage = maxDayCount > 0 ? (count / maxDayCount) * 100 : 0;
-              
+
               return (
                 <div key={day} className="flex flex-col items-center gap-2 flex-1 group">
                   <span className="text-xs text-stone-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">{count}</span>
                   <div className="w-full bg-stone-100 rounded-t-sm relative flex-1 flex items-end justify-center">
-                    <div 
+                    <div
                       className="w-full bg-stone-800 rounded-t-sm transition-all duration-1000 hover:bg-amber-500"
                       style={{ height: `${percentage}%` }}
                     ></div>
                   </div>
-                  <span className="text-xs font-medium text-stone-500">{day.slice(0,3)}</span>
+                  <span className="text-xs font-medium text-stone-500">{day.slice(0, 3)}</span>
                 </div>
               );
             })}

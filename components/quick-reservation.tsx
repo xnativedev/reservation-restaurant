@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { ArrowRight, CalendarDays, ChevronDown, Clock3, UsersRound } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { timeSlots } from "@/data/restaurant";
 
 export function QuickReservation() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export function QuickReservation() {
   }
   return <form className="quick-booking" onSubmit={submit} noValidate>
     <div className="quick-field"><label htmlFor="quick-date"><CalendarDays size={17} aria-hidden="true" /> {t("date")}</label><input id="quick-date" type="date" value={date} min={minDate} onChange={(e) => { setDate(e.target.value); setError(""); }} required /></div>
-    <div className="quick-field"><label htmlFor="quick-time"><Clock3 size={17} aria-hidden="true" /> {t("time")}</label><div className="select-wrap"><select id="quick-time" value={time} onChange={(e) => setTime(e.target.value)}>{["17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"].map((slot) => <option key={slot}>{slot}</option>)}</select><ChevronDown size={16} aria-hidden="true" /></div></div>
+    <div className="quick-field"><label htmlFor="quick-time"><Clock3 size={17} aria-hidden="true" /> {t("time")}</label><div className="select-wrap"><select id="quick-time" value={time} onChange={(e) => setTime(e.target.value)}>{timeSlots.map((slot) => <option key={slot}>{slot}</option>)}</select><ChevronDown size={16} aria-hidden="true" /></div></div>
     <div className="quick-field"><label htmlFor="quick-guests"><UsersRound size={17} aria-hidden="true" /> {t("guests")}</label><div className="select-wrap"><select id="quick-guests" value={guests} onChange={(e) => setGuests(e.target.value)}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{common("guests", { count: i + 1 })}</option>)}</select><ChevronDown size={16} aria-hidden="true" /></div></div>
     <div className="quick-submit"><button className="button button-dark" type="submit">{common("findTable")} <ArrowRight size={17} aria-hidden="true" /></button></div>
     {error && <p className="quick-error" role="alert">{error} {Number(guests) >= 9 && <a href={`tel:${common("phone")}`}>{reservation("largePartyLink")}</a>}</p>}

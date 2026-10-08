@@ -15,7 +15,7 @@ export default async function AdminDashboardLayout({
   await requirePageAdmin(locale);
 
   return (
-    <div className="min-h-screen bg-[#F7F7F5] flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row" style={{ background: "var(--admin-bg)" }}>
       <AdminSidebar />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 min-h-screen overflow-x-hidden p-4 md:p-8">
         {children}

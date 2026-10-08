@@ -6,16 +6,23 @@ import { profileSchema } from "@/lib/validation";
 
 async function createAuth() {
   const secret = process.env.BETTER_AUTH_SECRET;
-  const baseURL = process.env.BETTER_AUTH_URL;
-  if (!secret || secret.length < 32 || !baseURL) {
-    throw new Error("Set BETTER_AUTH_URL and a random BETTER_AUTH_SECRET of at least 32 characters. See .env.example.");
+  const baseURL = process.env.BETTER_AUTH_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"));
+  if (!secret || secret.length < 32) {
+    throw new Error("Set a random BETTER_AUTH_SECRET of at least 32 characters. See .env.example.");
   }
+  const trustedOrigins = [
+    new URL(baseURL).origin,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null,
+    process.env.BETTER_AUTH_URL ? new URL(process.env.BETTER_AUTH_URL).origin : null,
+  ].filter(Boolean) as string[];
+
   const { db } = await getAuthDatabase();
   return betterAuth({
     secret,
     baseURL,
     database: mongodbAdapter(db),
-    trustedOrigins: [new URL(baseURL).origin],
+    trustedOrigins,
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 12,

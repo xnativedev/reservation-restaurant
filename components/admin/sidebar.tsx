@@ -3,15 +3,15 @@
 import { LogoutButton } from "@/components/account/logout-button";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { LayoutDashboard, Calendar, CalendarDays, Map, Table2, Users, BarChart3, Settings, UtensilsCrossed, Menu, X } from "lucide-react";
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const params = useParams();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  
-  // Basic locale extraction from pathname (e.g., /en/admin/... -> en)
-  const locale = pathname.split("/")[1] || "th";
+
+  const locale = (params?.locale as string) || "th";
   
   const navItems = [
     { name: "Dashboard", href: `/${locale}/admin`, icon: LayoutDashboard },
@@ -28,7 +28,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Top Bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#F7F7F5] border-b border-stone-200 z-40 flex items-center justify-between px-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 border-b border-stone-200 z-40 flex items-center justify-between px-4" style={{ background: "var(--admin-bg)" }}>
         <div className="flex items-center gap-2">
           <UtensilsCrossed className="w-5 h-5 text-amber-500" />
           <span className="font-medium tracking-wider text-sm">MAISON EMBER</span>
@@ -47,9 +47,9 @@ export function AdminSidebar() {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 w-64 bg-[#F7F7F5] border-r border-stone-200 flex flex-col h-screen z-50 transition-transform duration-300 ease-in-out ${
+      <aside className={`fixed inset-y-0 left-0 w-64 border-r border-stone-200 flex flex-col h-screen z-50 transition-transform duration-300 ease-in-out ${
         isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      }`}>
+      }`} style={{ background: "var(--admin-bg)" }}>
       {/* Brand Logo */}
       <div className="h-20 flex items-center px-8 border-b border-stone-200">
         <div className="flex items-center gap-3 text-stone-900">
